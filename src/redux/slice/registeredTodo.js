@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-const localIP = "192.168.190.207";
+const baseUrl = "https://todobackend-b8cy.onrender.com";
 
 let currentDate = new Date();
 currentDate = currentDate.toISOString().split("T")[0];
@@ -10,9 +10,7 @@ export const getCurrentDayTodos = createAsyncThunk(
   "getCurrentDayTodos",
   async (_, { rejectWithValue }) => {
     try {
-      const response =
-        (await fetch("http://" + localIP + ":5500/todos/" + currentDate)) ||
-        (await fetch("http://localhost:5500/todos/" + currentDate));
+      const response = await fetch(baseUrl + "/todos/" + currentDate);
 
       if (!response.ok) {
         throw new Error("Failed to fetch current day todos");
@@ -30,17 +28,11 @@ export const uploadTodo = createAsyncThunk(
   "uploadRegisteredTodo",
   async (todo, { rejectWithValue }) => {
     try {
-      const response =
-        (await fetch("http://" + localIP + ":5500/todos", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(todo),
-        })) ||
-        (await fetch("http://localhost:5500/todos", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(todo),
-        }));
+      const response = await fetch(baseUrl + "/todos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(todo),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to upload todo");
@@ -132,7 +124,7 @@ export const registeredTodoSlice = createSlice({
         state.details.status = "succeeded";
         state.details.isSent = true;
         state.details.apiResponse = action.payload;
-        alert("Data Sent Successfully...")
+        alert("Data Sent Successfully...");
       })
       .addCase(uploadTodo.rejected, (state, action) => {
         console.log("Upload failed");
