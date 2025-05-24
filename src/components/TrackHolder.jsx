@@ -11,18 +11,26 @@ currentDate = currentDate.toISOString().split("T")[0];
 // let globalDate = useSelector((state)=>state.registeredTodo)
 
 function getLastFiveDates() {
-  let prevDates = [];
+  const prevDates = [];
 
   for (let x = 0; x < 5; x++) {
-    let date = new Date();
+    const date = new Date();
+    date.setDate(date.getDate() - x);
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = date.toLocaleString("default", { month: "short" });
+    const fullDate = date.toISOString().split("T")[0]; // format: yyyy-mm-dd
+
     prevDates.push({
-      date: currentDate.slice(-2) - x,
-      month: date.toLocaleString("default", { month: "short" }),
-      fullDate: currentDate.slice(0, -2) + (currentDate.slice(-2) - x),
+      date: day,
+      month,
+      fullDate,
     });
   }
-  return prevDates.reverse();
+
+  return prevDates.reverse(); // earliest first
 }
+
 
 const TrackHolder = () => {
   const dispatch = useDispatch();
